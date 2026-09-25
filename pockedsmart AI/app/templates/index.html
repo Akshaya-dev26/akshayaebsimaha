@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<section class="hero">
+
+    <div>
+
+        <span class="badge">
+            GENERATIVE AI • BUDGET PLANNING
+        </span>
+
+        <h1>
+            Plan smarter.
+            <br>
+            <span>
+                Spend with confidence.
+            </span>
+        </h1>
+
+        <p>
+            PocketSmart AI turns your budget,
+            preferences and optional outfit image
+            into practical recommendations for
+            home interiors, parties and jewelry.
+        </p>
+
+        <div class="actions">
+
+            <a
+                class="btn primary"
+                href="/planner/home"
+            >
+                Start Planning
+            </a>
+
+            <a
+                class="btn secondary"
+                href="/register"
+            >
+                Create Account
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="grid three">
+
+    <a
+        class="card feature"
+        href="/planner/home"
+    >
+
+        <div class="icon">
+            🏠
+        </div>
+
+        <h3>
+            Home Interior
+        </h3>
+
+        <p>
+            Allocate your budget across
+            furniture, lighting and decor.
+        </p>
+
+    </a>
+
+
+    <a
+        class="card feature"
+        href="/planner/party"
+    >
+
+        <div class="icon">
+            🎉
+        </div>
+
+        <h3>
+            Party Planner
+        </h3>
+
+        <p>
+            Plan food, venue, decoration
+            and entertainment.
+        </p>
+
+    </a>
+
+
+    <a
+        class="card feature"
+        href="/planner/jewelry"
+    >
+
+        <div class="icon">
+            💎
+        </div>
+
+        <h3>
+            Jewelry Match
+        </h3>
+
+        <p>
+            Get occasion and style-aware
+            jewelry recommendations.
+        </p>
+
+    </a>
+
+</section>
+
+
+<section class="info card">
+
+    <h2>
+        How it works
+    </h2>
+
+    <div class="steps">
+
+        <div>
+            <b>1</b>
+            <span>
+                Enter your budget and preferences.
+            </span>
+        </div>
+
+        <div>
+            <b>2</b>
+            <span>
+                FastAPI validates the request.
+            </span>
+        </div>
+
+        <div>
+            <b>3</b>
+            <span>
+                Gemini generates recommendations.
+            </span>
+        </div>
+
+        <div>
+            <b>4</b>
+            <span>
+                Your plan is saved in history.
+            </span>
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

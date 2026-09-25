@@ -1,0 +1,667 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<section class="planner-head">
+
+    <span class="badge">
+        AI PLANNER
+    </span>
+
+    <h1>
+        {{ planner_type|capitalize }}
+        Planner
+    </h1>
+
+    <p id="plannerIntro"></p>
+
+</section>
+
+
+<form
+    id="plannerForm"
+    class="card form-card"
+    enctype="multipart/form-data"
+>
+
+
+{% if planner_type == "home" %}
+
+
+<label>
+
+    Total Budget (₹)
+
+    <input
+        name="budget"
+        type="number"
+        min="1"
+        required
+    >
+
+</label>
+
+
+<label>
+
+    Rooms
+
+    <select
+        name="rooms"
+        multiple
+        required
+    >
+
+        <option>
+            Living Room
+        </option>
+
+        <option>
+            Kitchen
+        </option>
+
+        <option>
+            Bedroom
+        </option>
+
+        <option>
+            Dining Room
+        </option>
+
+        <option>
+            Study Room
+        </option>
+
+    </select>
+
+    <small>
+        Hold Ctrl to select multiple.
+    </small>
+
+</label>
+
+
+<label>
+
+    Style
+
+    <select name="style">
+
+        <option>
+            Modern
+        </option>
+
+        <option>
+            Minimalist
+        </option>
+
+        <option>
+            Traditional
+        </option>
+
+        <option>
+            Bohemian
+        </option>
+
+        <option>
+            Contemporary
+        </option>
+
+    </select>
+
+</label>
+
+
+<label>
+
+    Requirements
+
+    <textarea
+        name="requirements"
+        placeholder="Example: Need more storage and warm lighting"
+    ></textarea>
+
+</label>
+
+
+{% elif planner_type == "party" %}
+
+
+<label>
+
+    Total Budget (₹)
+
+    <input
+        name="budget"
+        type="number"
+        min="1"
+        required
+    >
+
+</label>
+
+
+<label>
+
+    Guest Count
+
+    <input
+        name="guests"
+        type="number"
+        min="1"
+        required
+    >
+
+</label>
+
+
+<label>
+
+    Event Type
+
+    <input
+        name="event_type"
+        placeholder="Birthday / Wedding / Corporate"
+        required
+    >
+
+</label>
+
+
+<label>
+
+    Venue
+
+    <input
+        name="venue"
+        placeholder="Home / Hall / Outdoor"
+    >
+
+</label>
+
+
+<label>
+
+    Requirements
+
+    <textarea
+        name="requirements"
+        placeholder="Vegetarian food, theme, music, etc."
+    ></textarea>
+
+</label>
+
+
+{% else %}
+
+
+<label>
+
+    Budget (₹)
+
+    <input
+        name="budget"
+        type="number"
+        min="1"
+        required
+    >
+
+</label>
+
+
+<label>
+
+    Occasion
+
+    <input
+        name="occasion"
+        placeholder="Wedding / Birthday / Festival"
+        required
+    >
+
+</label>
+
+
+<label>
+
+    Style
+
+    <input
+        name="style"
+        placeholder="Minimal / Traditional / Statement"
+        required
+    >
+
+</label>
+
+
+<label>
+
+    Outfit Description
+
+    <textarea
+        name="outfit_description"
+        placeholder="Example: Blue saree with silver border"
+    ></textarea>
+
+</label>
+
+
+<label>
+
+    Outfit Image
+
+    <input
+        name="outfit_image"
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+    >
+
+    <small>
+        Optional. Maximum 5 MB.
+    </small>
+
+</label>
+
+
+{% endif %}
+
+
+<button
+    class="btn primary"
+    type="submit"
+>
+
+    Generate Recommendations
+
+</button>
+
+
+</form>
+
+
+<section
+    id="result"
+    class="hidden"
+></section>
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script>
+
+const plannerType =
+    "{{ planner_type }}";
+
+
+const intro = {
+
+    home:
+        "Tell us your rooms, style and budget. AI will split the budget and suggest practical items.",
+
+    party:
+        "Tell us your guest count and event details. AI will allocate the budget across event needs.",
+
+    jewelry:
+        "Tell us the occasion and style. You can also upload an outfit image for multimodal matching."
+
+};
+
+
+document
+    .getElementById("plannerIntro")
+    .textContent =
+        intro[plannerType];
+
+
+document
+    .getElementById("plannerForm")
+    .addEventListener(
+        "submit",
+        async (event) => {
+
+            event.preventDefault();
+
+            const form =
+                event.target;
+
+            let options = {
+                method: "POST"
+            };
+
+
+            if (plannerType === "home") {
+
+                const formData =
+                    new FormData(form);
+
+                options.body =
+                    JSON.stringify({
+
+                        budget:
+                            Number(
+                                formData.get(
+                                    "budget"
+                                )
+                            ),
+
+                        rooms:
+                            formData.getAll(
+                                "rooms"
+                            ),
+
+                        style:
+                            formData.get(
+                                "style"
+                            ),
+
+                        requirements:
+                            formData.get(
+                                "requirements"
+                            )
+
+                    });
+
+                options.headers = {
+                    "Content-Type":
+                        "application/json"
+                };
+
+            }
+
+
+            else if (
+                plannerType === "party"
+            ) {
+
+                const formData =
+                    new FormData(form);
+
+                options.body =
+                    JSON.stringify({
+
+                        budget:
+                            Number(
+                                formData.get(
+                                    "budget"
+                                )
+                            ),
+
+                        guests:
+                            Number(
+                                formData.get(
+                                    "guests"
+                                )
+                            ),
+
+                        event_type:
+                            formData.get(
+                                "event_type"
+                            ),
+
+                        venue:
+                            formData.get(
+                                "venue"
+                            ),
+
+                        requirements:
+                            formData.get(
+                                "requirements"
+                            )
+
+                    });
+
+                options.headers = {
+                    "Content-Type":
+                        "application/json"
+                };
+
+            }
+
+
+            else {
+
+                options.body =
+                    new FormData(form);
+
+            }
+
+
+            const result =
+                await api(
+                    "/api/generate-" +
+                    plannerType,
+                    options
+                );
+
+
+            if (!result.ok) {
+
+                showMessage(
+                    result.data.detail ||
+                    "Please login first.",
+                    true
+                );
+
+                if (
+                    result.status === 401
+                ) {
+
+                    setTimeout(
+                        () => {
+                            location.href =
+                                "/login";
+                        },
+                        700
+                    );
+
+                }
+
+                return;
+            }
+
+
+            renderRecommendation(
+                result.data
+            );
+
+        }
+    );
+
+
+function renderRecommendation(
+    data
+) {
+
+    const element =
+        document.getElementById(
+            "result"
+        );
+
+    element.classList.remove(
+        "hidden"
+    );
+
+
+    element.innerHTML = `
+
+        <div class="card result">
+
+            <div class="result-top">
+
+                <div>
+
+                    <span class="badge">
+
+                        ${escapeHtml(
+                            data.source
+                        )}
+
+                    </span>
+
+                    <h2>
+
+                        ${escapeHtml(
+                            data.summary
+                        )}
+
+                    </h2>
+
+                </div>
+
+                <strong>
+
+                    ₹${Number(
+                        data.budget
+                    ).toLocaleString(
+                        "en-IN"
+                    )}
+
+                </strong>
+
+            </div>
+
+
+            <h3>
+                Budget Allocation
+            </h3>
+
+
+            <div class="grid four">
+
+                ${(data.allocations || [])
+                    .map(
+                        item => `
+
+                    <div class="mini-card">
+
+                        <b>
+                            ${escapeHtml(
+                                item.category
+                            )}
+                        </b>
+
+                        <strong>
+                            ₹${Number(
+                                item.amount || 0
+                            ).toLocaleString(
+                                "en-IN"
+                            )}
+                        </strong>
+
+                        <small>
+                            ${escapeHtml(
+                                item.reason || ""
+                            )}
+                        </small>
+
+                    </div>
+
+                `
+                    )
+                    .join("")}
+
+            </div>
+
+
+            <h3>
+                Recommendations
+            </h3>
+
+
+            <div class="grid three">
+
+                ${(data.recommendations || [])
+                    .map(
+                        item => `
+
+                    <div class="recommend-card">
+
+                        <span>
+                            ${escapeHtml(
+                                item.platform ||
+                                "Other"
+                            )}
+                        </span>
+
+                        <h3>
+                            ${escapeHtml(
+                                item.name ||
+                                "Option"
+                            )}
+                        </h3>
+
+                        <strong>
+                            ₹${Number(
+                                item.estimated_price ||
+                                0
+                            ).toLocaleString(
+                                "en-IN"
+                            )}
+                        </strong>
+
+                        <p>
+                            ${escapeHtml(
+                                item.why || ""
+                            )}
+                        </p>
+
+                        ${
+                            item.url
+                            ?
+                            `
+                            <a
+                                target="_blank"
+                                rel="noopener"
+                                href="${item.url}"
+                            >
+                                Open Platform ↗
+                            </a>
+                            `
+                            :
+                            ""
+                        }
+
+                    </div>
+
+                `
+                    )
+                    .join("")}
+
+            </div>
+
+
+            <h3>
+                Tips
+            </h3>
+
+
+            <ul>
+
+                ${(data.tips || [])
+                    .map(
+                        tip => `
+                            <li>
+                                ${escapeHtml(tip)}
+                            </li>
+                        `
+                    )
+                    .join("")}
+
+            </ul>
+
+        </div>
+    `;
+
+
+    element.scrollIntoView({
+        behavior: "smooth"
+    });
+}
+
+</script>
+
+{% endblock %}

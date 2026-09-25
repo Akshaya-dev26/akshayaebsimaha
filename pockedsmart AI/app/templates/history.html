@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<section class="planner-head">
+
+    <span class="badge">
+        YOUR PLANS
+    </span>
+
+    <h1>
+        Recommendation History
+    </h1>
+
+    <p>
+        Review your previous budget plans.
+    </p>
+
+</section>
+
+
+<div id="history"></div>
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script>
+
+async function loadHistory() {
+
+    const result =
+        await api(
+            "/api/history"
+        );
+
+
+    const element =
+        document.getElementById(
+            "history"
+        );
+
+
+    if (!result.ok) {
+
+        element.innerHTML = `
+
+            <div class="card">
+
+                <p>
+
+                    Please
+                    <a href="/login">
+                        login
+                    </a>
+                    to view history.
+
+                </p>
+
+            </div>
+        `;
+
+        return;
+    }
+
+
+    if (!result.data.length) {
+
+        element.innerHTML = `
+
+            <div class="card">
+
+                <p>
+                    No recommendations yet.
+                    Create your first plan.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    element.innerHTML =
+        result.data
+            .map(
+                item => `
+
+                <div class="card history-row">
+
+                    <div>
+
+                        <span class="badge">
+
+                            ${escapeHtml(
+                                item.planner_type
+                            )}
+
+                        </span>
+
+                        <h3>
+
+                            ₹${Number(
+                                item.budget
+                            ).toLocaleString(
+                                "en-IN"
+                            )}
+
+                        </h3>
+
+                    </div>
+
+
+                    <p>
+
+                        ${escapeHtml(
+                            item.response.summary ||
+                            ""
+                        )}
+
+                    </p>
+
+
+                    <small>
+
+                        ${new Date(
+                            item.created_at
+                        ).toLocaleString()}
+
+                    </small>
+
+                </div>
+
+            `
+            )
+            .join("");
+}
+
+
+loadHistory();
+
+</script>
+
+{% endblock %}

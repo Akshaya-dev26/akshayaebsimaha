@@ -1,0 +1,89 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>PocketSmart AI</title>
+
+    <link
+        rel="stylesheet"
+        href="/static/css/style.css"
+    >
+
+</head>
+
+<body>
+
+<header class="nav">
+
+    <a
+        class="brand"
+        href="/"
+    >
+        PocketSmart AI
+    </a>
+
+    <nav>
+
+        <a href="/">Home</a>
+
+        <a href="/planner/home">
+            Home Planner
+        </a>
+
+        <a href="/planner/party">
+            Party
+        </a>
+
+        <a href="/planner/jewelry">
+            Jewelry
+        </a>
+
+        <a href="/history">
+            History
+        </a>
+
+        <a
+            href="/login"
+            id="loginLink"
+        >
+            Login
+        </a>
+
+        <button
+            class="link-button hidden"
+            id="logoutBtn"
+        >
+            Logout
+        </button>
+
+    </nav>
+
+</header>
+
+
+<main class="container">
+
+    {% block content %}
+    {% endblock %}
+
+</main>
+
+
+<script src="/static/js/app.js"></script>
+
+
+{% block scripts %}
+{% endblock %}
+
+</body>
+
+</html>
